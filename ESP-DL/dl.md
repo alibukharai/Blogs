@@ -325,7 +325,7 @@ public:
                          l5(MaxPool2D<int16_t>({2,2},PADDING_VALID,{}, 2, 2, "l4")),                       
                          l6(Conv2D<int16_t>(-9, get_statefulpartitionedcall_sequential_1_conv2d_5_biasadd_filter(), get_statefulpartitionedcall_sequential_1_conv2d_5_biasadd_bias(), get_statefulpartitionedcall_sequential_1_conv2d_5_biasadd_activation(), PADDING_VALID,{}, 1,1, "l5")),                    
                          l7(MaxPool2D<int16_t>({2,2},PADDING_VALID,{}, 2, 2, "l6")),
-                         l8(Reshape<int16_t>({1,1,6400},"l7_reshape")), //16,2id8,28 or 1,12544 or 12544, or 1,1,12544 or 1,16,28,28 or 1,16,28,28
+                         l8(Reshape<int16_t>({1,1,6400},"l7_reshape")),
                          l9(Conv2D<int16_t>(-9, get_fused_gemm_0_filter(), get_fused_gemm_0_bias(), get_fused_gemm_0_activation(), PADDING_VALID, {}, 1, 1, "l8")),
                          l10(Conv2D<int16_t>(-9, get_fused_gemm_1_filter(), get_fused_gemm_1_bias(), NULL, PADDING_VALID,{}, 1,1, "l9")),
                          l11(Softmax<int16_t>(-14,"l10")){}
@@ -422,7 +422,6 @@ extern "C" void app_main(void)
 {
 for (int i=0; i<9216;i++){
 
-    // printf("0x%02x,",example_element[i]);
 }
 Tensor<int16_t> input;
                 input.set_element((int16_t *)example_element).set_exponent(input_exponent).set_shape({input_height,input_width,input_channel}).set_auto_free(false);
