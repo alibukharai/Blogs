@@ -28,7 +28,7 @@ For the sake of simplicity I am using a classification problem and developed a s
 <sup> * Model is trained in Google [Co-lab](https://colab.research.google.com/) 
 
 
-#### 1.1 Dataset
+#### 1.1. Dataset
 
 For this classification problem I am using an open source dataset from kaggle [Hand Gesture recognition Dataset](https://www.kaggle.com/datasets/gti-upm/leapgestrecog). The original dataset includes 10 classes however I am using only 6 classes that is easy to recognize and more useful in daily life. The hand gesture classes are represented in the table below. One more difference is related to the image size, The original dataset have an image size of (240,640) however for the sake of simplicity we resized the dataset to (96,96). The dataset used in this article can be found from [here]().
 
@@ -46,7 +46,7 @@ For this classification problem I am using an open source dataset from kaggle [H
 
 <p align = 'left'>
 
-#### 1.2 Test/Train Split 
+#### 1.2. Test/Train Split 
 
 We need to divide our dataset into test, train and calibration dataset. These datasets are nothings but the subsets of our original [dataset](#11-dataset). Train datset is used to train the model while testing datset is to test the model performance similarly calibration datset is used during the [model quantization]() stage for calibration. Procedure to generate all these datasets are the same.
 
@@ -78,7 +78,7 @@ with open('y_train.pkl', 'rb') as file:
     y_train = pickle.load(file)
 ```
 
-#### 1.3 Creating a Model
+#### 1.3. Creating a Model
 
 I have created a basic Convoltion Neural Network (CNN)for this classification problem. It consisists of 3 convolution layer followed by maxpooling and fully connected layer with an output of 6 neurons.  For more details about the creation of [CNN](https://github.com/filipefborba/HandRecognition/blob/master/project3/project3.ipynb). Below is the code used to create a CNN. 
 
@@ -108,7 +108,7 @@ model.summary()
 <p align="center">
     <img src="./1.png#center">
 
-#### 1.4 Training Model
+#### 1.4. Training Model
 CNN is trained for 5 epoches and its gives and accuracy of around 99%. 
 ```
 history=model.fit(X_train, y_train, epochs=5, batch_size=64, verbose=1, validation_data=(X_test, y_test))
@@ -117,13 +117,13 @@ history=model.fit(X_train, y_train, epochs=5, batch_size=64, verbose=1, validati
 <p align="center">
     <img src="./2.png#center">
 
-#### 1.5 Saving Model 
+#### 1.5. Saving Model 
 The trained model is saved in .h5 formate. 
 
 ``` 
 model.save('handrecognition_model.h5')
 ```
-#### 1.6 Model Conversion
+#### 1.6. Model Conversion
 ESP-DL uses model in ONXX [formate](https://onnx.ai/). To be competible with ESP-DL I transformed a model into ONXX by using below lines of code. 
 
 ```
@@ -145,7 +145,7 @@ files.download("/content/tmp_model.zip")
 Once the ONNX model is ready, by using the steps below to convert the model into ESP-DL formate.\
 <sup> *[Pychram](https://www.jetbrains.com/pycharm/) IDE is used to convert model in ESP-DL formate.  
 
-### 1.1 Requirements <sup>[link](https://github.com/espressif/esp-dl/tree/master/tutorial/quantization_tool_example#step-121-set-up-the-environment) 
+### 2.1. Requirements <sup>[link](https://github.com/espressif/esp-dl/tree/master/tutorial/quantization_tool_example#step-121-set-up-the-environment) 
 Setting up an environment and installing correct verison of the modules is a key to start with. If the modules are not installed in correct version it produces an error. 
 
 <p align = 'center'>
@@ -166,7 +166,7 @@ Second thing we need to clone the [ESP-DL](https://github.com/espressif/esp-dl) 
 ```
 git clone -- recursive https://github.com/espressif/esp-dl.git
 ```
-### 1.2 Optimization and Quantization 
+### 2.2. Optimization and Quantization 
 To run the optimizer provided by ESP-DL,  we need to find and  
 - calibrator.pyd
 - calibrator_acc.pyd
@@ -180,7 +180,7 @@ place these files into the working directory of pychram. Furthermore also place 
 
 Follow the below steps for generating optimzed and quantized model. 
 
-1. import the libraries 
+#### 2.2.1. import the libraries 
 
 ```
 from optimizer import *
@@ -188,18 +188,18 @@ from calibrator import *
 from evaluator import *
 ```
 
-2. Load the ONNX Model 
+#### 2.2.2. Load the ONNX Model 
 
 ```
 onnx_model = onnx.load("handrecognition_model.onnx")
 ```
 
-3. Optimize the ONNX model 
+#### 2.2.3. Optimize the ONNX model 
 
 ```
 optimized_model_path = optimize_fp_model("handrecognition_model.onnx")
 ```
-4. Load Calibration dataset 
+#### 2.2.4. Load Calibration dataset 
 ```
 with open('X_cal.pkl', 'rb') as f:
     (test_images) = pickle.load(f)
@@ -210,7 +210,7 @@ with open('y_cal.pkl', 'rb') as f:
 calib_dataset = test_images[0:1800:20]
 pickle_file_path = 'handrecognition_calib.pickle'
 ```
-5. Calibration 
+#### 2.2.5. Calibration 
 ```
 model_proto = onnx.load(optimized_model_path)
 print('Generating the quantization table:')
@@ -234,7 +234,7 @@ Two new files with extension .cpp and .hpp is generated in the path, and output 
 <p align="center">
     <img src="./4.png#center">
 
-### 1.3 Evaluate 
+### 2.3. Evaluate 
 This step is not necessary however if you want to see the performance of optimized model the following code can be run. 
 ```
 print('Evaluating the performance on esp32s3:')
@@ -261,22 +261,221 @@ for i in range(batch_num):
     fp_res = fp_res + sum(np.argmax(fp_outputs[0], axis=1) == test_labels[i * batch_size:(i + 1) * batch_size])
 print('accuracy of int8 model is: %f' % (res / len(test_images)))
 print('accuracy of fp32 model is: %f' % (fp_res / len(test_images)))
-
 ```
+<sup>* please follow the [link](https://github.com/espressif/esp-dl/tree/master/tutorial/quantization_tool_example#step-122-optimize-your-model) for more details 
 
 ## 3. Model Deployment  
-1. Building in ESP-IDF
-2. 
+### 3.1. ESP-IDF Project Hirarchy
 
+The first step is to create a new project in VS-Code based on ESP-IDF standards. <sup>[video](https://www.youtube.com/watch?v=Lc6ausiKvQM) / [blog](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html)</sup> and copy the files.cpp and .hpp generated in the previous [section](#12-optimization-and-quantization) to your current working directory. Add components folder to your working directory. The Project directory should looks like the picture below;
 
+<p align="center">
+    <img src="./5.png#center">
 
-### Running a Model 
+### 3.2. Model define
 
+#### 3.2.1. Import libraries
 
+```
+#pragma once
+#include <stdint.h>
+#include "dl_layer_model.hpp"
+#include "dl_layer_base.hpp"
+#include "dl_layer_max_pool2d.hpp"
+#include "dl_layer_conv2d.hpp"
+#include "dl_layer_concat.hpp"
+#include "handrecognition_coefficient.hpp"
+#include "dl_layer_reshape.hpp"
+#include "dl_layer_softmax.hpp"
 
+using namespace dl;
+using namespace layer;
+using namespace handrecognition_coefficient;
+```
+#### 3.2.2. Declare layers
 
-### Output 
+```
+class HANDRECOGNITION : public Model<int16_t> 
+{
+private:
+    Reshape<int16_t> l1;
+    Conv2D<int16_t> l2;
+    MaxPool2D<int16_t> l3;
+    Conv2D<int16_t> l4;
+    MaxPool2D<int16_t> l5;
+    Conv2D<int16_t> l6;
+    MaxPool2D<int16_t> l7;
+    Reshape<int16_t> l8;
+    Conv2D<int16_t> l9;
+    Conv2D<int16_t> l10;
+public:
+    Softmax<int16_t> l11; // output layer 
+```
 
+#### 3.2.3. Initialize layers 
 
+```
+ HANDRECOGNITION () : l1(Reshape<int16_t>({96,96,1})),
+                         l2(Conv2D<int16_t>(-8, get_statefulpartitionedcall_sequential_1_conv2d_3_biasadd_filter(), get_statefulpartitionedcall_sequential_1_conv2d_3_biasadd_bias(), get_statefulpartitionedcall_sequential_1_conv2d_3_biasadd_activation(), PADDING_VALID, {}, 1,1, "l1")),
+                         l3(MaxPool2D<int16_t>({2,2},PADDING_VALID, {}, 2, 2, "l2")),                      
+                         l4(Conv2D<int16_t>(-9, get_statefulpartitionedcall_sequential_1_conv2d_4_biasadd_filter(), get_statefulpartitionedcall_sequential_1_conv2d_4_biasadd_bias(), get_statefulpartitionedcall_sequential_1_conv2d_4_biasadd_activation(), PADDING_VALID,{}, 1,1, "l3")),                       
+                         l5(MaxPool2D<int16_t>({2,2},PADDING_VALID,{}, 2, 2, "l4")),                       
+                         l6(Conv2D<int16_t>(-9, get_statefulpartitionedcall_sequential_1_conv2d_5_biasadd_filter(), get_statefulpartitionedcall_sequential_1_conv2d_5_biasadd_bias(), get_statefulpartitionedcall_sequential_1_conv2d_5_biasadd_activation(), PADDING_VALID,{}, 1,1, "l5")),                    
+                         l7(MaxPool2D<int16_t>({2,2},PADDING_VALID,{}, 2, 2, "l6")),
+                         l8(Reshape<int16_t>({1,1,6400},"l7_reshape")), //16,2id8,28 or 1,12544 or 12544, or 1,1,12544 or 1,16,28,28 or 1,16,28,28
+                         l9(Conv2D<int16_t>(-9, get_fused_gemm_0_filter(), get_fused_gemm_0_bias(), get_fused_gemm_0_activation(), PADDING_VALID, {}, 1, 1, "l8")),
+                         l10(Conv2D<int16_t>(-9, get_fused_gemm_1_filter(), get_fused_gemm_1_bias(), NULL, PADDING_VALID,{}, 1,1, "l9")),
+                         l11(Softmax<int16_t>(-14,"l10")){}
+```
+#### 3.2.4. Build layers
 
-## Future 
+```
+void build(Tensor<int16_t> &input)
+    {
+        this->l1.build(input);
+        this->l2.build(this->l1.get_output());
+        this->l3.build(this->l2.get_output());
+        this->l4.build(this->l3.get_output());
+        this->l5.build(this->l4.get_output());
+        this->l6.build(this->l5.get_output());
+        this->l7.build(this->l6.get_output());
+        this->l8.build(this->l7.get_output());
+        this->l9.build(this->l8.get_output());
+        this->l10.build(this->l9.get_output());
+        this->l11.build(this->l10.get_output());        
+    }
+```
+#### 3.2.5. Call layers
+
+```
+void call(Tensor<int16_t> &input)
+    {
+        this->l1.call(input);
+        input.free_element();
+
+        this->l2.call(this->l1.get_output());
+        this->l1.get_output().free_element();
+
+        this->l3.call(this->l2.get_output());
+        this->l2.get_output().free_element();
+
+        this->l4.call(this->l3.get_output());
+        this->l3.get_output().free_element();
+
+        this->l5.call(this->l4.get_output());
+        this->l4.get_output().free_element();
+
+        this->l6.call(this->l5.get_output());
+        this->l5.get_output().free_element();
+
+        this->l7.call(this->l6.get_output());
+        this->l6.get_output().free_element();
+
+        this->l8.call(this->l7.get_output());
+        this->l7.get_output().free_element();
+
+        this->l9.call(this->l8.get_output());
+        this->l8.get_output().free_element();
+
+        this->l10.call(this->l9.get_output());
+        this->l9.get_output().free_element();
+
+        this->l11.call(this->l10.get_output());
+        this->l10.get_output().free_element();
+    }
+};
+```
+### 3.3. Model Run
+#### 3.3.1. import libraries
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include "esp_system.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "dl_tool.hpp"
+#include "model_define.hpp"
+```
+
+#### 3.3.2. Declare Input 
+```
+int input_height = 96;
+int input_width = 96;
+int input_channel = 1;
+int input_exponent = -7;
+
+__attribute__((aligned(16))) int16_t example_element[] = {
+
+    //add your input image pixels 
+};
+```
+
+#### 3.3.3. Set Input Shape
+
+```
+extern "C" void app_main(void)
+{
+for (int i=0; i<9216;i++){
+
+    // printf("0x%02x,",example_element[i]);
+}
+Tensor<int16_t> input;
+                input.set_element((int16_t *)example_element).set_exponent(input_exponent).set_shape({input_height,input_width,input_channel}).set_auto_free(false);
+```
+
+#### 3.3.4. Call Model 
+
+```cpp
+HANDRECOGNITION model;
+                dl::tool::Latency latency;
+                latency.start();
+                model.forward(input);
+                latency.end();
+                latency.print("\nSIGN", "forward");
+```
+
+### 3.3.5. Monitor Output 
+
+```c
+float *score = model.l11.get_output().get_element_ptr();
+                float max_score = score[0];
+                int max_index = 0;
+                for (size_t i = 0; i < 6; i++)
+                {
+                    printf("%f, ", score[i]*100);
+                    if (score[i] > max_score)
+                    {
+                        max_score = score[i];
+                        max_index = i;
+                    }
+                }
+                printf("\n");
+
+                switch (max_index)
+                {
+                    case 0:
+                    printf("Palm: 0");
+                    break;
+                    case 1:
+                    printf("I: 1");
+                    break;
+                    case 2:
+                    printf("Thumb: 2");
+                    break;
+                    case 3:
+                    printf("Index: 3");
+                    break;
+                    case 4:
+                    printf("ok: 4");
+                    break;
+                    case 5:
+                    printf("C: 5");
+                    break;
+                    default:
+                    printf("No result");
+                }
+                printf("\n");
+
+}
+```
+## 4. Future Work 
