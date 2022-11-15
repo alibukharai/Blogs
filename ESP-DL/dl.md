@@ -153,12 +153,12 @@ Setting up an environment and installing correct verison of the modules is a key
 
 | Module     | How to install  |
 | :-----------: | :-----------: |
-| Python == 3.7        |   -        |
+| Python == 3.7                   |
 | Numba == 0.53.1        |   `pip install Numba==0.53.1`           |
 | ONNX == 1.9.0           |   `pip install ONNX==1.9.0`        |
 |ONNX Runtime == 1.7.0       |  `pip install ONNXRuntime==1.7.0`         |
 |ONNX Optimizer == 0.2.6            |  `pip install ONNXOptimizer==0.2.6`        |
-| 
+
 <p align = 'center'>
 <b>Table 2 — Required Modules and specified verisons </b>.
 <p align = 'left'>
