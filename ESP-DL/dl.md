@@ -62,7 +62,7 @@ X_test, X_cal, y_test, y_cal = train_test_split(X_test1, y_test1, test_size=ts, 
 
 For the sake of simplicity and reproduction of this tutorial I also provided the data used in Pickel file formate. use the below block of code to open data in your environment.   
 
-```
+```python
 import pickle
 
 with open('X_test.pkl', 'rb') as file:
@@ -82,7 +82,7 @@ with open('y_train.pkl', 'rb') as file:
 
 I have created a basic Convoltion Neural Network (CNN)for this classification problem. It consisists of 3 convolution layer followed by maxpooling and fully connected layer with an output of 6 neurons.  For more details about the creation of [CNN](https://github.com/filipefborba/HandRecognition/blob/master/project3/project3.ipynb). Below is the code used to create a CNN. 
 
-```
+```python
 import tensorflow as tf
 from tensorflow import keras
 from keras.models import Sequential
@@ -110,7 +110,8 @@ model.summary()
 
 #### 1.4. Training Model
 CNN is trained for 5 epoches and its gives and accuracy of around 99%. 
-```
+
+```python 
 history=model.fit(X_train, y_train, epochs=5, batch_size=64, verbose=1, validation_data=(X_test, y_test))
 ```
 
@@ -120,13 +121,13 @@ history=model.fit(X_train, y_train, epochs=5, batch_size=64, verbose=1, validati
 #### 1.5. Saving Model 
 The trained model is saved in .h5 formate. 
 
-``` 
+```python 
 model.save('handrecognition_model.h5')
 ```
 #### 1.6. Model Conversion
 ESP-DL uses model in ONXX [formate](https://onnx.ai/). To be competible with ESP-DL I transformed a model into ONXX by using below lines of code. 
 
-```
+```python
 model = tf.keras.models.load_model("/content/handrecognition_model.h5")
 tf.saved_model.save(model, "tmp_model")
 !python -m tf2onnx.convert --saved-model tmp_model --output "handrecognition_model.onnx"
@@ -134,7 +135,7 @@ tf.saved_model.save(model, "tmp_model")
 ```
 Finally downloaded .h5 model, ONNX model and model checkpoints. 
 
-```
+```python
 from google.colab import files
 files.download("/content/handrecognition_model.h5")
 files.download("/content/handrecognition_model.onnx")
@@ -182,7 +183,7 @@ Follow the below steps for generating optimzed and quantized model.
 
 #### 2.2.1. import the libraries 
 
-```
+```python
 from optimizer import *
 from calibrator import *
 from evaluator import *
@@ -190,17 +191,17 @@ from evaluator import *
 
 #### 2.2.2. Load the ONNX Model 
 
-```
+```python
 onnx_model = onnx.load("handrecognition_model.onnx")
 ```
 
 #### 2.2.3. Optimize the ONNX model 
 
-```
+```python
 optimized_model_path = optimize_fp_model("handrecognition_model.onnx")
 ```
 #### 2.2.4. Load Calibration dataset 
-```
+```python
 with open('X_cal.pkl', 'rb') as f:
     (test_images) = pickle.load(f)
 with open('y_cal.pkl', 'rb') as f:
@@ -211,7 +212,7 @@ calib_dataset = test_images[0:1800:20]
 pickle_file_path = 'handrecognition_calib.pickle'
 ```
 #### 2.2.5. Calibration 
-```
+```python
 model_proto = onnx.load(optimized_model_path)
 print('Generating the quantization table:')
 
@@ -234,9 +235,11 @@ Two new files with extension .cpp and .hpp is generated in the path, and output 
 <p align="center">
     <img src="./4.png#center">
 
+
 ### 2.3. Evaluate 
 This step is not necessary however if you want to see the performance of optimized model the following code can be run. 
-```
+
+```python
 print('Evaluating the performance on esp32s3:')
 eva = Evaluator('int16', 'per-tensor', 'esp32s3')
 eva.set_providers(['CPUExecutionProvider'])
@@ -276,7 +279,7 @@ The first step is to create a new project in VS-Code based on ESP-IDF standards.
 
 #### 3.2.1. Import libraries
 
-```
+```c
 #pragma once
 #include <stdint.h>
 #include "dl_layer_model.hpp"
@@ -294,7 +297,7 @@ using namespace handrecognition_coefficient;
 ```
 #### 3.2.2. Declare layers
 
-```
+```c
 class HANDRECOGNITION : public Model<int16_t> 
 {
 private:
@@ -314,7 +317,7 @@ public:
 
 #### 3.2.3. Initialize layers 
 
-```
+```c
  HANDRECOGNITION () : l1(Reshape<int16_t>({96,96,1})),
                          l2(Conv2D<int16_t>(-8, get_statefulpartitionedcall_sequential_1_conv2d_3_biasadd_filter(), get_statefulpartitionedcall_sequential_1_conv2d_3_biasadd_bias(), get_statefulpartitionedcall_sequential_1_conv2d_3_biasadd_activation(), PADDING_VALID, {}, 1,1, "l1")),
                          l3(MaxPool2D<int16_t>({2,2},PADDING_VALID, {}, 2, 2, "l2")),                      
@@ -329,7 +332,8 @@ public:
 ```
 #### 3.2.4. Build layers
 
-```
+
+```c
 void build(Tensor<int16_t> &input)
     {
         this->l1.build(input);
@@ -347,7 +351,7 @@ void build(Tensor<int16_t> &input)
 ```
 #### 3.2.5. Call layers
 
-```
+```c
 void call(Tensor<int16_t> &input)
     {
         this->l1.call(input);
@@ -386,8 +390,9 @@ void call(Tensor<int16_t> &input)
 };
 ```
 ### 3.3. Model Run
+
 #### 3.3.1. import libraries
-```
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include "esp_system.h"
@@ -398,7 +403,7 @@ void call(Tensor<int16_t> &input)
 ```
 
 #### 3.3.2. Declare Input 
-```
+```cpp
 int input_height = 96;
 int input_width = 96;
 int input_channel = 1;
@@ -412,7 +417,7 @@ __attribute__((aligned(16))) int16_t example_element[] = {
 
 #### 3.3.3. Set Input Shape
 
-```
+```cpp
 extern "C" void app_main(void)
 {
 for (int i=0; i<9216;i++){
