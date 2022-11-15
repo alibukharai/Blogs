@@ -105,14 +105,17 @@ model.add(Dense(6, activation='softmax'))
 model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 model.summary()
 ```
-![output](./1)
+<p align="center">
+    <img src="./1.png#center">
 
 #### 1.4 Training Model
 CNN is trained for 5 epoches and its gives and accuracy of around 99%. 
 ```
 history=model.fit(X_train, y_train, epochs=5, batch_size=64, verbose=1, validation_data=(X_test, y_test))
 ```
-![output](./2.png)
+
+<p align="center">
+    <img src="./2.png#center">
 
 #### 1.5 Saving Model 
 The trained model is saved in .h5 formate. 
@@ -170,17 +173,34 @@ To run the optimizer provided by ESP-DL,  we need to find and
 - evaluator.pyd 
 - optimizer.py
 
-and place these files into the working directory of pychram. 
+place these files into the working directory of pychram. Furthermore also place the calibration dataset generated in previous [section](#12-testtrain-split) and ONNX model saved in previous [section](#15-saving-model). Your working directory looks like this;
+
+<p align="center">
+    <img src="./3.png#center">
+
+Follow the below steps for generating optimzed and quantized model. 
+
+1. import the libraries 
 
 ```
 from optimizer import *
 from calibrator import *
 from evaluator import *
+```
 
+2. Load the ONNX Model 
+
+```
 onnx_model = onnx.load("handrecognition_model.onnx")
+```
+
+3. Optimize the ONNX model 
+
+```
 optimized_model_path = optimize_fp_model("handrecognition_model.onnx")
-
-
+```
+4. Load Calibration dataset 
+```
 with open('X_cal.pkl', 'rb') as f:
     (test_images) = pickle.load(f)
 with open('y_cal.pkl', 'rb') as f:
@@ -189,8 +209,9 @@ with open('y_cal.pkl', 'rb') as f:
 
 calib_dataset = test_images[0:1800:20]
 pickle_file_path = 'handrecognition_calib.pickle'
-
-
+```
+5. Calibration 
+```
 model_proto = onnx.load(optimized_model_path)
 print('Generating the quantization table:')
 
@@ -205,12 +226,16 @@ calib.generate_quantization_table(model_proto,calib_dataset, pickle_file_path)
 calib.export_coefficient_to_cpp(model_proto,  pickle_file_path, 'esp32s3', '.', 'handrecognition_coefficient', True)
 
 ```
+Two new files with extension .cpp and .hpp is generated in the path, and output looks like this. 
 
+<sup> *Take screenshot of this output later it will be used. 
+
+
+<p align="center">
+    <img src="./4.png#center">
 
 ### 1.3 Evaluate 
-
-
-
+This step is not necessary however if you want to see the performance of optimized model the following code can be run. 
 ```
 print('Evaluating the performance on esp32s3:')
 eva = Evaluator('int16', 'per-tensor', 'esp32s3')
@@ -239,10 +264,9 @@ print('accuracy of fp32 model is: %f' % (fp_res / len(test_images)))
 
 ```
 
-
 ## 3. Model Deployment  
 1. Building in ESP-IDF
-2.  
+2. 
 
 
 
