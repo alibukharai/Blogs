@@ -1,0 +1,6 @@
+[submodule "ESP-DL/model_deployment/components/esp-dl"]
+	path = ESP-DL/model_deployment/components/esp-dl
+	url = https://github.com/espressif/esp-dl.git
+[submodule "ESP-DL/model_deployment/components/esp32-camera"]
+	path = ESP-DL/model_deployment/components/esp32-camera
+	url = https://github.com/espressif/esp32-camera.git
