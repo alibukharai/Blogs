@@ -187,7 +187,7 @@ To run the optimizer provided by ESP-DL,  we need to find and
 - evaluator.pyd 
 - optimizer.py
 
-place these files into the working directory of pychram - IDE. Furthermore also place the calibration dataset generated in [previous section 1.2](#12-testtrain-split) and ONNX formate model saved in [previous section 1.5](#15-saving-model). Your working directory should looks like this;
+place these files into the working directory of pychram - IDE. Furthermore also place the calibration dataset generated in [previous section 1.2.](#12-testtrain-split) and ONNX formate model saved in [previous section 1.5.](#15-saving-model). Your working directory should looks like this;
 
 <p align="center">
     <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/3.png#center">
@@ -294,7 +294,7 @@ Model deployment is the final and crusial step. In this step we will implement o
 ### 3.1. ESP-IDF Project Hirarchy
 
 - The first step is to create a new project in VS-Code based on ESP-IDF standards. For more details about how to create VScode project for ESP32 please [click here](https://www.youtube.com/watch?v=Lc6ausiKvQM) or [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html)
-- Copy the files.cpp and .hpp generated in the [previous section 2.2](#22-optimization-and-quantization) to your current working directory. 
+- Copy the files.cpp and .hpp generated in the [previous section 2.2.](#22-optimization-and-quantization) to your current working directory. 
 - Add all the depended components in components folder of your working directory. 
 
 The Project directory should looks like the picture below;
@@ -330,7 +330,7 @@ using namespace handrecognition_coefficient;
 The next is to declare each layer. 
 - Input is not consider as a layer so not defined here.
 - Except for output layer all the layers are declared as private layers.
-- Remember to place each layer in order as defined in previous section while [building model](#13-building-a-model). 
+- Remember to place each layer in order as defined in [previous section 1.3.](#13-building-a-model) while building model. 
 
 ```cpp
 class HANDRECOGNITION : public Model<int16_t> 
@@ -361,15 +361,15 @@ Before getting into details let me show how our model looks like when open in Ne
     <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/6.png#center">
 
 
-- The first layer is a reshape layer (note that the input is not consider as a layer) and giving an output shape of (96 , 96, 1) for this layer. This parameters must be the same as you used during model training [see section](#13-building-a-model). Anotherway to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2](#22-optimization-and-quantization). 
+- The first layer is a reshape layer (note that the input is not consider as a layer) and giving an output shape of (96 , 96, 1) for this layer. This parameters must be the same as you used during model training [see section 1.3.](#13-building-a-model). Anotherway to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2.](#22-optimization-and-quantization). 
 
-- For convolution 2D layer we can get the name of this layer for the filter, baise and activation function from the .hpp file generated at the end of [previous section 2.2](#22-optimization-and-quantization), However for the weights we need to check the output generated in [section](#225-calibration)  
+- For convolution 2D layer we can get the name of this layer for the filter, baise and activation function from the .hpp file generated at the end of [previous section 2.2.](#22-optimization-and-quantization), However for the weights we need to check the output generated in [section 2.2.5.](#225-calibration)  
 
-- For maxpooling layer, we can use the same parameters as we use during building our model [see section](#13-building-a-model) or anotherway to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2](#22-optimization-and-quantization).
+- For maxpooling layer, we can use the same parameters as we use during building our model [see section 1.3.](#13-building-a-model) or anotherway to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2.](#22-optimization-and-quantization).
 
-- For the dense layer or fully connected layer, conv2D block is used and we can get the name of this layer for the filter, baise and activation function from the .hpp file generated at the end of [previous section 2.2](#22-optimization-and-quantization), However for the weights we need to check the output generated in [section](#225-calibration)
+- For the dense layer or fully connected layer, conv2D block is used and we can get the name of this layer for the filter, baise and activation function from the .hpp file generated at the end of [previous section 2.2.](#22-optimization-and-quantization), However for the weights we need to check the output generated in [section 2.2.5.](#225-calibration)
 
-- The output layer is a softmax layer weights and name can be taken from the output generated in [section](#225-calibration)
+- The output layer is a softmax layer weights and name can be taken from the output generated in [section 2.2.5.](#225-calibration)
 
 - The transpose layer shown in picture above is not used. The reason is we use input (96,96,1) instead of (1,96,96). if we use input shape as (1,96,96) we need an additional block of transpose. 
 
@@ -468,7 +468,7 @@ After building our Model we need to run and give input to our model. we will use
 ```
 
 #### 3.3.2. Declare Input 
-we trained our model by giving an input of (96, 96, 1) [see here](#13-building-a-model). However the input_exponent can be get the output generated in [section](#225-calibration). Another thing is to write the pixels of the input/test picture here. 
+we trained our model by giving an input of (96, 96, 1) [see section 1.3.](#13-building-a-model). However the input_exponent can be get the output generated in [section 2.2.5.](#225-calibration). Another thing is to write the pixels of the input/test picture here. 
 
 ```cpp
 int input_height = 96;
