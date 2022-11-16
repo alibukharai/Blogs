@@ -191,7 +191,7 @@ To run the optimizer provided by ESP-DL, we need to find and
 place these files into the working directory of pychram - IDE. Furthermore, also place the calibration dataset generated in the [previous section 1.2.](#12-testtrain-split) and ONNX formate model saved in [previous section 1.5.](#15-saving-model). Your working directory should look like this;
 
 <p align="center">
-    <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/3.png#center">
+    <img src="./_static/3.png#center">
 
 Follow the below steps for generating optimized and quantized model. 
 
@@ -251,7 +251,7 @@ If everything are alright, at this stage two files with an extension .cpp and .h
 
 
 <p align="center">
-    <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/4.png#center">
+    <img src="./_static/4.png#center">
 
 
 ### 2.3. Evaluate 
@@ -301,7 +301,7 @@ Model deployment is the final and crucial step. In this step, we will implement 
 The Project directory should look like the picture below;
 
 <p align="center">
-    <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/5.png#center">
+    <img src="./_static/5.png#center">
 
 ### 3.2. Model define
 
@@ -359,7 +359,7 @@ After declaring the layers, we need to initialize each layer with its weight, bi
 Before getting into details let me show how is our model looks like when opening in Netron that is somehow imported to get some parameters for initializing. 
 
 <p align="center">
-    <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/6.png#center">
+    <img src="./_static/6.png#center">
 
 
 - The first layer is reshaped layer (note that the input is not considered as a layer) and gives an output shape of (96 , 96, 1) for this layer. These parameters must be the same as you used during model training [see section 1.3.](#13-building-a-model).Another way to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2.](#22-optimization-and-quantization). 
