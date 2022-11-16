@@ -1,11 +1,11 @@
 # Building with ESP-DL 
 
-Artificial intelligence transform the way computer interact with real world. Decision are carried by getting data from Tiny low powered devices and sensors into the cloud. Connectivity, high cost and data privacy are some of the demerits of this method. Edge artificial intelligence is another way to process the data right on the physical device without sending data back and forth improving the latency and security and reduced the  bandwidth and power.
+Artificial intelligence transforms the way computers interact with the real world. Decisions are carried by getting data from Tiny low-powered devices and sensors into the cloud. Connectivity, high cost and data privacy are some of the demerits of this method. Edge artificial intelligence is another way to process the data right on the physical device without sending data back and forth improving the latency and security and reducing the bandwidth and power.
 
 
-[Espressif System](https://www.espressif.com/) provides a new library [ESP-DL](https://github.com/espressif/esp-dl) that can be used to deploy your high performance deep learning model right at the top of your [ESP32](https://www.espressif.com/en/products/socs/esp32), [ESP32-S2](https://www.espressif.com/en/products/socs/esp32-s2), [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3) and [ESP32-C3](https://www.espressif.com/en/products/socs/esp32-c3). 
+[Espressif System](https://www.espressif.com/) provides a new library [ESP-DL](https://github.com/espressif/esp-dl) that can be used to deploy your high-performance deep learning model right at the top of your [ESP32](https://www.espressif.com/en/products/socs/esp32), [ESP32-S2](https://www.espressif.com/en/products/socs/esp32-s2), [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3) and [ESP32-C3](https://www.espressif.com/en/products/socs/esp32-c3). 
 
-*In this article, we will understand how to use [ESP-DL](https://github.com/espressif/esp-dl) and [deploy](https://github.com/espressif/esp-dl/tree/master/tutorial/quantization_tool_example) a deep learning model on your  [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3).*
+*In this article, we will understand how to use [ESP-DL](https://github.com/espressif/esp-dl) and [deploy](https://github.com/espressif/esp-dl/tree/master/tutorial/quantization_tool_example) a deep-learning model on your  [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3).*
 
 ---
 # Content 
@@ -15,22 +15,22 @@ The article is divided into 3 portions
 3. Model Deployment <sup>[jump](#3-model-deployment)  
 ---
 
-## Prerequiest for using ESP-DL
+## Prerequisite for using ESP-DL
 * Before getting a deep dive into ESP-DL, I assume that readers have;  
 
     1. Knowledge about building and training neural networks.<sup>  [(deep learning basics with python)](https://www.youtube.com/watch?v=WvoLTXIjBYU) 
-    2. Configure the ESP-IDF environment. <sup>[setting-up ESP-IDF environment](https://www.youtube.com/watch?v=byVPAfodTyY) / [toolchain for ESP-IDF](https://blog.espressif.com/esp-idf-development-tools-guide-part-i-89af441585b) 
+    2. Configure the ESP-IDF environment. <sup>[setting-up ESP-IDF environment](https://www.youtube.com/watch?v=byVPAfodTyY)/[toolchain for ESP-IDF](https://blog.espressif.com/esp-idf-development-tools-guide-part-i-89af441585b) 
     3. Working knowledge of basic C language.<sup>[C - language tutorial](https://www.youtube.com/watch?v=KJgsSFOSQv0&t=12665s)
 
 
 ## 1. Model Development
-For the sake of simplicity I am using a classification problem and developed a simple deep learning model to classifying 6 different hand gestures. Many pre-trained [models](https://github.com/filipefborba/HandRecognition) are also available however I prefer to build my own to get better understanding of each layer of model.\
+For the sake of simplicity, I am using a classification problem and developed a simple deep-learning model to classify 6 different hand gestures. Many pre-trained [models](https://github.com/filipefborba/HandRecognition) are also available however I prefer to build my own to get a better understanding of each layer of the model.\
 <sub> * I am using Google [Co-lab](https://colab.research.google.com/) for model development  
 
 
 ### 1.1. Dataset
 
-For this classification problem I am using an open source dataset from kaggle [Hand Gesture recognition Dataset](https://www.kaggle.com/datasets/gti-upm/leapgestrecog). The original dataset includes 10 classes however I am using only 6 classes that is easy to recognize and more useful in daily life. The hand gesture classes are represented in the table below. One more difference is related to the image size, The original dataset have an image size of (240 , 640) however for the sake of simplicity I have resized the dataset to (96 , 96). The dataset used in this article can be found from [here](https://github.com/alibukharai/Blogs/tree/main/ESP-DL).
+For this classification problem, I am using an open-source dataset from the Kaggle [Hand Gesture recognition Dataset](https://www.kaggle.com/datasets/gti-upm/leapgestrecog). The original dataset includes 10 classes however I am using only 6 classes that are easy to recognize and more useful in daily life. The hand gesture classes are represented in the table below. One more difference is related to the image size, The original dataset has an image size of (240 , 640) however for the sake of simplicity I have resized the dataset to (96 , 96). The dataset used in this article can be found [here](https://github.com/alibukharai/Blogs/tree/main/ESP-DL).
 
 <p align = 'center'>
 
@@ -50,7 +50,7 @@ For this classification problem I am using an open source dataset from kaggle [H
 
 ### 1.2. Test/Train Split 
 
-We need to divide our dataset into test, train and calibration dataset. These datasets are nothings but the subsets of our original [dataset](#11-dataset). Train datset is used to train the model while testing datset is to test the model performance similarly calibration dataset is used during the [model quantization](#22-optimization-and-quantization) stage for calibration purposes. Procedure to generate all these datasets are the same. I used train_test_split for this purpose. 
+We need to divide our dataset into test, train and calibration datasets. These datasets are nothing but the subsets of our original [dataset](#11-dataset). The training dataset is used to train the model while the testing dataset is to test the model performance similarly calibration dataset is used during the [model quantization](#22-optimization-and-quantization) stage for calibration purposes. The procedure to generate all these datasets is the same. I used train_test_split for this purpose. 
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -84,7 +84,7 @@ with open('y_train.pkl', 'rb') as file:
 
 ### 1.3. Building a Model
 
-I have created a basic Convoltion Neural Network (CNN)for this classification problem. It consisists of 3 convolution layer followed by maxpooling and fully connected layer with an output layer of 6 neurons. More details about the creation of CNN can be found [here](https://github.com/filipefborba/HandRecognition/blob/master/project3/project3.ipynb). Below is the code used to build a CNN. 
+I have created a basic Convolution Neural Network (CNN)for this classification problem. It consists of 3 convolution layers followed by max-pooling and a fully connected layer with an output layer of 6 neurons. More details about the creation of CNN can be found [here](https://github.com/filipefborba/HandRecognition/blob/master/project3/project3.ipynb). Below is the code used to build a CNN. 
 
 ```python
 import tensorflow as tf
@@ -117,7 +117,7 @@ model.summary()
     <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/1.png#center">
 
 ### 1.4. Training Model
-Model is running for 5 epoches and its gives an accuracy of around 99%. 
+The model is running for 5 epochs and it gives an accuracy of around 99%. 
 
 ```python 
 history=model.fit(X_train, y_train, epochs=5, batch_size=64, verbose=1, validation_data=(X_test, y_test))
@@ -128,7 +128,7 @@ history=model.fit(X_train, y_train, epochs=5, batch_size=64, verbose=1, validati
     <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/2.png#center">
 
 ### 1.5. Saving Model 
-The trained model is saved in Hierarical Data Formate(.h5). For more details how keras model be saved [click here](https://www.tensorflow.org/guide/keras/save_and_serialize#how_to_save_and_load_a_model). 
+The trained model is saved in Hierarchical Data Formate(.h5). For more details on how the Keras model be saved [click here](https://www.tensorflow.org/guide/keras/save_and_serialize#how_to_save_and_load_a_model). 
 
 ```python 
 model.save('handrecognition_model.h5')
@@ -136,7 +136,7 @@ model.save('handrecognition_model.h5')
 ```
 
 ### 1.6. Model Conversion
-ESP-DL uses model in Open Neural Network Exchange (ONXX) formate. For more details how ONNX is working [click here](https://onnx.ai/). To be competible with ESP-DL I have converted trained .h5 formate of model into ONXX formate  by using below lines of code. 
+ESP-DL uses model in Open Neural Network Exchange (ONXX) formate. For more details on how ONNX is working [click here](https://onnx.ai/). To be compatible with ESP-DL I have converted the trained .h5 format of the model into ONXX format by using the below lines of code. 
 
 ```python
 model = tf.keras.models.load_model("/content/handrecognition_model.h5")
@@ -156,11 +156,11 @@ files.download("/content/tmp_model.zip")
 ```
 
 ## 2. ESP-DL Formate
-Once the ONNX formate of model is ready, follow the steps below to convert the model into ESP-DL formate.\
+Once the ONNX format of the model is ready, follow the steps below to convert the model into ESP-DL format.\
 <sup> * I am using [Pychram](https://www.jetbrains.com/pycharm/) IDE for ESP-DL formate conversion.  
 
 ### 2.1. Requirements  
-Setting up an environment and installing correct verison of the modules is always a key to start with. If the modules are not installed in correct version it gives an error. For more information about requirents for ESP-DL formate conversion please [click here](https://github.com/espressif/esp-dl/tree/master/tutorial/quantization_tool_example#step-121-set-up-the-environment)
+Setting up an environment and installing the correct version of the modules is always key to start with. If the modules are not installed in the correct version it gives an error. For more information about requirements for ESP-DL formate conversion please [click here](https://github.com/espressif/esp-dl/tree/master/tutorial/quantization_tool_example#step-121-set-up-the-environment)
 
 <p align = 'center'>
 
@@ -176,7 +176,7 @@ Setting up an environment and installing correct verison of the modules is alway
 <b>Table 2 — Required Modules and specified verisons </b>.
 <p align = 'left'>
 
-The next we need to download ESP-DL. we can clone the [ESP-DL](https://github.com/espressif/esp-dl) from the github respository. 
+Next, we need to download ESP-DL. we can clone the [ESP-DL](https://github.com/espressif/esp-dl) from the Github repository. 
 ```bash
 git clone -- recursive https://github.com/espressif/esp-dl.git
 
@@ -188,12 +188,12 @@ To run the optimizer provided by ESP-DL, we need to find and
 - evaluator.pyd 
 - optimizer.py
 
-place these files into the working directory of pychram - IDE. Furthermore also place the calibration dataset generated in [previous section 1.2.](#12-testtrain-split) and ONNX formate model saved in [previous section 1.5.](#15-saving-model). Your working directory should looks like this;
+place these files into the working directory of pychram - IDE. Furthermore, also place the calibration dataset generated in the [previous section 1.2.](#12-testtrain-split) and ONNX formate model saved in [previous section 1.5.](#15-saving-model). Your working directory should look like this;
 
 <p align="center">
     <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/3.png#center">
 
-Follow the below steps for generating optimzed and quantized model. 
+Follow the below steps for generating optimized and quantized model. 
 
 #### 2.2.1. import the libraries 
 
@@ -245,9 +245,9 @@ calib.generate_quantization_table(model_proto,calib_dataset, pickle_file_path)
 calib.export_coefficient_to_cpp(model_proto, pickle_file_path, 'esp32s3', '.', 'handrecognition_coefficient', True)
 
 ```
-If everything is alright, at this stage two files with an extension .cpp and .hpp is generated in the path, and output should looks like this. 
+If everything are alright, at this stage two files with an extension .cpp and .hpp is generated in the path, and the output should look like this. 
 
-<sup> *later this output is used, so its better to take a screen shot and save this 
+<sup> *later this output is used, so it is better to take a screenshot and save this 
 
 
 <p align="center">
@@ -255,7 +255,7 @@ If everything is alright, at this stage two files with an extension .cpp and .hp
 
 
 ### 2.3. Evaluate 
-This step is not necessary however if you want to see the performance of optimized model the following code can be used. 
+This step is not necessary however if you want to see the performance of  the optimized model the following code can be used. 
 
 ```python
 print('Evaluating the performance on esp32s3:')
@@ -288,27 +288,27 @@ print('accuracy of fp32 model is: %f' % (fp_res / len(test_images)))
 
 ## 3. Model Deployment  
 
-Model deployment is the final and crusial step. In this step we will implement our model in C-language to run at the top of our [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3) microcontroller and gets the results. 
+Model deployment is the final and crucial step. In this step, we will implement our model in C-language to run at the top of our [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3) microcontroller and gets the results. 
 
 <sup> *I am using [Visual Studio Code](https://code.visualstudio.com/) for the deployment of our model on ESP32-S3.
 
-### 3.1. ESP-IDF Project Hirarchy
+### 3.1. ESP-IDF Project Hierarchy
 
-- The first step is to create a new project in VS-Code based on ESP-IDF standards. For more details about how to create VScode project for ESP32 please [click here](https://www.youtube.com/watch?v=Lc6ausiKvQM) or [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html)
+- The first step is to create a new project in VS-Code based on ESP-IDF standards. For more details about how to create a VScode project for ESP32 please [click here](https://www.youtube.com/watch?v=Lc6ausiKvQM) or [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html)
 - Copy the files.cpp and .hpp generated in the [previous section 2.2.](#22-optimization-and-quantization) to your current working directory. 
-- Add all the depended components in components folder of your working directory. 
+- Add all the dependent components to the components folder of your working directory. 
 
-The Project directory should looks like the picture below;
+The Project directory should look like the picture below;
 
 <p align="center">
     <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/5.png#center">
 
 ### 3.2. Model define
 
-We will define our model in model_define.hpp file. Follow the below steps for details explannation of defining the model.   
+We will define our model in the 'model_define.hpp' file. Follow the below steps for adetails explanation of defining the model.   
 
 #### 3.2.1. Import libraries
-Firstly import all the relevant libraries. Based on our [model design](#13-building-a-model) or anotherway to know which particular libraries need to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2](#22-optimization-and-quantization).
+Firstly import all the relevant libraries. Based on our [model design](#13-building-a-model) or another way to know which particular libraries need to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2](#22-optimization-and-quantization).
 Please [check here](https://github.com/espressif/esp-dl/tree/master/include/layer) for all the currently supported libraries by [ESP-DL](https://github.com/espressif/esp-dl). 
 
 ```cpp
@@ -329,9 +329,9 @@ using namespace handrecognition_coefficient;
 ```
 #### 3.2.2. Declare layers
 The next is to declare each layer. 
-- Input is not consider as a layer so not defined here.
-- Except for output layer all the layers are declared as private layers.
-- Remember to place each layer in order as defined in [previous section 1.3.](#13-building-a-model) while building model. 
+- Input is not considered a layer so not defined here.
+- Except for the output layer, all the layers are declared as private layers.
+- Remember to place each layer in order as defined in [previous section 1.3.](#13-building-a-model) while building the model. 
 
 ```cpp
 class HANDRECOGNITION : public Model<int16_t> 
@@ -354,25 +354,25 @@ public:
 
 #### 3.2.3. Initialize layers 
 
-After declaring the layers, we need to initialize each layer with its weight, baises activation fuctions and shape. lets see each layer one by one in details. 
+After declaring the layers, we need to initialize each layer with its weight, biases activation functions and shape. let us see each layer one by one in detail. 
 
-Before getting into details let me show how our model looks like when open in Netron that is somehow import inorder to get some parameters for initilizing. 
+Before getting into details let me show how is our model looks like when opening in Netron that is somehow imported to get some parameters for initializing. 
 
 <p align="center">
     <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/6.png#center">
 
 
-- The first layer is a reshape layer (note that the input is not consider as a layer) and giving an output shape of (96 , 96, 1) for this layer. This parameters must be the same as you used during model training [see section 1.3.](#13-building-a-model). Anotherway to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2.](#22-optimization-and-quantization). 
+- The first layer is reshaped layer (note that the input is not considered as a layer) and gives an output shape of (96 , 96, 1) for this layer. These parameters must be the same as you used during model training [see section 1.3.](#13-building-a-model).Another way to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2.](#22-optimization-and-quantization). 
 
-- For convolution 2D layer we can get the name of this layer for the filter, baise and activation function from the .hpp file generated at the end of [previous section 2.2.](#22-optimization-and-quantization), However for the weights we need to check the output generated in [section 2.2.5.](#225-calibration)  
+- For the convolution 2D layer we can get the name of this layer for the filter, bias and activation function from the .hpp file generated at the end of the [previous section 2.2.](#22-optimization-and-quantization), However for the weights, we need to check the output generated in [section 2.2.5.](#225-calibration)  
 
-- For maxpooling layer, we can use the same parameters as we use during building our model [see section 1.3.](#13-building-a-model) or anotherway to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2.](#22-optimization-and-quantization).
+- For the max-pooling layer, we can use the same parameters as we use during building our model [see section 1.3.](#13-building-a-model) or another way to know the parameter and layer is to use an open-source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of the [previous section 2.2.](#22-optimization-and-quantization).
 
-- For the dense layer or fully connected layer, conv2D block is used and we can get the name of this layer for the filter, baise and activation function from the .hpp file generated at the end of [previous section 2.2.](#22-optimization-and-quantization), However for the weights we need to check the output generated in [section 2.2.5.](#225-calibration)
+- For the dense layer or fully connected layer, conv2D block is used and we can get the name of this layer for the filter, bias and activation function from the .hpp file generated at the end of [previous section 2.2.](#22-optimization-and-quantization), However for the weights, we need to check the output generated in [section 2.2.5.](#225-calibration)
 
-- The output layer is a softmax layer weights and name can be taken from the output generated in [section 2.2.5.](#225-calibration)
+- The output layer is a softmax layer weight and the name can be taken from the output generated in [section 2.2.5.](#225-calibration)
 
-- The transpose layer shown in picture above is not used. The reason is we use input (96,96,1) instead of (1,96,96). if we use input shape as (1,96,96) we need an additional block of transpose. 
+- The transpose layer shown in the picture above is not used. The reason is we use input (96,96,1) instead of (1,96,96). if we use the input shape as (1,96,96) we need an additional block of transpose. 
 
 
 ```cpp
@@ -391,7 +391,7 @@ Before getting into details let me show how our model looks like when open in Ne
 ```
 #### 3.2.4. Build layers
 
-The next step is to build each layer. For more information about building layers please [click here](https://github.com/espressif/esp-dl/tree/master/include/layer) in each layer building function.  
+The next step is to build each layer. For more information about building layers please [click here](https://github.com/espressif/esp-dl/tree/master/include/layer) on each layer building function.  
 
 ```cpp
 void build(Tensor<int16_t> &input)
@@ -412,7 +412,7 @@ void build(Tensor<int16_t> &input)
 ```
 #### 3.2.5. Call layers
 
-In the end we need to connect these layers together and call one by one by using a call function. For more information about calling layers please [click here](https://github.com/espressif/esp-dl/tree/master/include/layer) in each layer calling function.
+In the end, we need to connect these layers and call them one by one by using a call function. For more information about calling layers please [click here](https://github.com/espressif/esp-dl/tree/master/include/layer) on each layer calling function.
 
 ```cpp
 void call(Tensor<int16_t> &input)
@@ -454,7 +454,7 @@ void call(Tensor<int16_t> &input)
 
 ```
 ### 3.3. Model Run
-After building our Model we need to run and give input to our model. we will use app-main.cpp file to generate the input and run our model on [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3). 
+After building our Model we need to run and give input to our model. we will use 'app-main.cpp' file to generate the input and run our model on [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3). 
 
 #### 3.3.1. import libraries
 ```c
@@ -469,7 +469,7 @@ After building our Model we need to run and give input to our model. we will use
 ```
 
 #### 3.3.2. Declare Input 
-we trained our model by giving an input of (96, 96, 1) [see section 1.3.](#13-building-a-model). However the input_exponent can be get the output generated in [section 2.2.5.](#225-calibration). Another thing is to write the pixels of the input/test picture here. 
+we trained our model by giving an input of (96, 96, 1) [see section 1.3.](#13-building-a-model). However, the input_exponent can get the output generated in [section 2.2.5.](#225-calibration). Another thing is to write the pixels of the input/test picture here. 
 
 ```cpp
 int input_height = 96;
@@ -500,7 +500,7 @@ Tensor<int16_t> input;
 ```
 
 #### 3.3.4. Call Model 
-call the model by calling the method forward and passing an input to it. Latency is used to calculate the time taken by ESP32-S3 to run neural netwrok. 
+call the model by calling the method forward and passing input to it. Latency is used to calculate the time taken by ESP32-S3 to run the neural network. 
 
 ```cpp
 HANDRECOGNITION model;
@@ -514,7 +514,7 @@ HANDRECOGNITION model;
 
 ### 3.3.5. Monitor Output 
 
-The output is taken out from the public layer i.e l11. and you can print the result in terminal. 
+The output is taken out from the public layer i.e l11. and you can print the result in the terminal. 
 
 ```cpp
 float *score = model.l11.get_output().get_element_ptr();
@@ -561,6 +561,6 @@ float *score = model.l11.get_output().get_element_ptr();
 ```
 ## 4. Future Work 
 
-In future we will design to get an image from the [ESP32-S3 EYE](https://www.espressif.com/en/products/devkits/esp-eye/resourceswww.espressif.com2) and can run a realtime model to predict the hand gesture. 
+In the future we will design to get an image from the [ESP32-S3 EYE](https://www.espressif.com/en/products/devkits/esp-eye/resourceswww.espressif.com2) and can run a real-time model to predict the hand gesture. 
 
 
