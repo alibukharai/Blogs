@@ -17,7 +17,7 @@ elseif(${IDF_TARGET} STREQUAL "esp32s2")
     set(links   "-L ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/esp32s2")
 
 elseif(${IDF_TARGET} STREQUAL "esp32s3")
-    set(links   "-L /home/ali/work/learning/colab_trained_model_with_results/deploy/components/esp-dl/lib/esp32s3")
+    set(links   "-L ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/esp32s2")
 
 elseif(${IDF_TARGET} STREQUAL "esp32c3")    
     set(links   "-L ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/esp32c3")
