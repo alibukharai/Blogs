@@ -8,6 +8,7 @@
 #include "model_define.hpp"
 
 
+
 int input_height = 96;
 int input_width = 96;
 int input_channel = 1;
