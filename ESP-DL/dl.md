@@ -134,6 +134,7 @@ The trained model is saved in Hierarical Data Formate(.h5). For more details how
 model.save('handrecognition_model.h5')
 
 ```
+
 ### 1.6. Model Conversion
 ESP-DL uses model in Open Neural Network Exchange (ONXX) formate. For more details how ONNX is working [click here](https://onnx.ai/). To be competible with ESP-DL I have converted trained .h5 formate of model into ONXX formate  by using below lines of code. 
 
@@ -181,7 +182,7 @@ git clone -- recursive https://github.com/espressif/esp-dl.git
 
 ```
 ### 2.2. Optimization and Quantization 
-To run the optimizer provided by ESP-DL,  we need to find and  
+To run the optimizer provided by ESP-DL, we need to find and  
 - calibrator.pyd
 - calibrator_acc.pyd
 - evaluator.pyd 
@@ -241,7 +242,7 @@ calib.set_providers(['CPUExecutionProvider'])
 # Obtain the quantization parameter
 calib.generate_quantization_table(model_proto,calib_dataset, pickle_file_path)
 # Generate the coefficient files for esp32s3
-calib.export_coefficient_to_cpp(model_proto,  pickle_file_path, 'esp32s3', '.', 'handrecognition_coefficient', True)
+calib.export_coefficient_to_cpp(model_proto, pickle_file_path, 'esp32s3', '.', 'handrecognition_coefficient', True)
 
 ```
 If everything is alright, at this stage two files with an extension .cpp and .hpp is generated in the path, and output should looks like this. 
@@ -499,7 +500,7 @@ Tensor<int16_t> input;
 ```
 
 #### 3.3.4. Call Model 
-call the model by calling the method forward and passing an input to it. Latency is used to calculate the time taken by esp32-S3 to run neural netwrok. 
+call the model by calling the method forward and passing an input to it. Latency is used to calculate the time taken by ESP32-S3 to run neural netwrok. 
 
 ```cpp
 HANDRECOGNITION model;
