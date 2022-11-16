@@ -560,6 +560,6 @@ float *score = model.l11.get_output().get_element_ptr();
 ```
 ## 4. Future Work 
 
-In future we will design to take an input from the [ESP32-S3 EYE](https://www.espressif.com/en/products/devkits/esp-eye/resourceswww.espressif.com2) and run a realtime model to predict the hand motion. 
+In future we will design to get an image from the [ESP32-S3 EYE](https://www.espressif.com/en/products/devkits/esp-eye/resourceswww.espressif.com2) and can run a realtime model to predict the hand gesture. 
 
 
