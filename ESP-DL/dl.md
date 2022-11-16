@@ -114,7 +114,7 @@ model.summary()
 
 ```
 <p align="center">
-    <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/1.png#center">
+    <img src="./_static/1.png#center">
 
 ### 1.4. Training Model
 The model is running for 5 epochs and it gives an accuracy of around 99%. 
@@ -125,7 +125,7 @@ history=model.fit(X_train, y_train, epochs=5, batch_size=64, verbose=1, validati
 ```
 
 <p align="center">
-    <img src="/home/ali/work/learning/Blogs/ESP-DL/_static/2.png#center">
+    <img src="./_static/2.png#center">
 
 ### 1.5. Saving Model 
 The trained model is saved in Hierarchical Data Formate(.h5). For more details on how the Keras model be saved [click here](https://www.tensorflow.org/guide/keras/save_and_serialize#how_to_save_and_load_a_model). 
