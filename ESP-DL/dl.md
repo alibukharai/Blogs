@@ -19,8 +19,9 @@ The article is divided into 3 portions
 * Before getting a deep dive into ESP-DL, I assume that readers have;  
 
     1. Knowledge about building and training neural networks.<sup>  [(deep learning basics with python)](https://www.youtube.com/watch?v=WvoLTXIjBYU) 
-    2. Configure the ESP-IDF environment. <sup>[setting-up ESP-IDF environment](https://www.youtube.com/watch?v=byVPAfodTyY)/[toolchain for ESP-IDF](https://blog.espressif.com/esp-idf-development-tools-guide-part-i-89af441585b) 
+    2. Configure the ESP-IDF [release 4.4](https://github.com/espressif/esp-idf/tree/release/v4.4)  environment. <sup>[setting-up ESP-IDF environment](https://www.youtube.com/watch?v=byVPAfodTyY)/[toolchain for ESP-IDF](https://blog.espressif.com/esp-idf-development-tools-guide-part-i-89af441585b) 
     3. Working knowledge of basic C language.<sup>[C - language tutorial](https://www.youtube.com/watch?v=KJgsSFOSQv0&t=12665s)
+
 
 
 ## 1. Model Development
