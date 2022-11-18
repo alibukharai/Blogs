@@ -137,7 +137,7 @@ model.save('handrecognition_model.h5')
 ```
 
 ### 1.6. Model Conversion
-ESP-DL uses model in Open Neural Network Exchange (ONXX) formate. For more details on how ONNX is working [click here](https://onnx.ai/). To be compatible with ESP-DL I have converted the trained .h5 format of the model into ONXX format by using the below lines of code. 
+ESP-DL uses model in Open Neural Network Exchange (ONXX) formate. For more details on how ONNX is working [click here](https://onnx.ai/). To be compatible with ESP-DL I have converted the trained .h5 formate of the model into ONXX formate by using the below lines of code. 
 
 ```python
 model = tf.keras.models.load_model("/content/handrecognition_model.h5")
@@ -157,7 +157,7 @@ files.download("/content/tmp_model.zip")
 ```
 
 ## 2. ESP-DL Formate
-Once the ONNX format of the model is ready, follow the steps below to convert the model into ESP-DL format.\
+Once the ONNX formate of the model is ready, follow the steps below to convert the model into ESP-DL formate.\
 <sup> * I am using [Pychram](https://www.jetbrains.com/pycharm/) IDE for ESP-DL formate conversion.  
 
 ### 2.1. Requirements  
