@@ -289,7 +289,7 @@ print('accuracy of fp32 model is: %f' % (fp_res / len(test_images)))
 
 ## 3. Model Deployment  
 
-Model deployment is the final and crucial step. In this step, we will implement our model in C-language to run at the top of our [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3) microcontroller and gets the results. 
+Model deployment is the final and crucial step. In this step, we will implement our model in C-language to run at the top of our [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3) micro-controller and gets the results. 
 
 <sup> *I am using [Visual Studio Code](https://code.visualstudio.com/) for the deployment of our model on ESP32-S3.
 
@@ -299,10 +299,29 @@ Model deployment is the final and crucial step. In this step, we will implement 
 - Copy the files.cpp and .hpp generated in the [previous section 2.2.](#22-optimization-and-quantization) to your current working directory. 
 - Add all the dependent components to the components folder of your working directory. 
 
-The Project directory should look like the picture below;
+The Project directory should look like this;
 
-<p align="center">
-    <img src="./_static/5.png#center">
+```cpp 
+├── CMakeLists.txt
+├── components
+│   ├── esp-dl
+│   └── esp-who
+├── dependencies.lock
+├── main
+│   ├── app_main.cpp
+│   └── CMakeLists.txt
+├── model
+│   ├── handrecognition_coefficient.cpp
+│   ├── handrecognition_coefficient.hpp
+│   └── model_define.hpp
+├── partitions.csv
+├── sdkconfig
+├── sdkconfig.defaults
+├── sdkconfig.defaults.esp32
+├── sdkconfig.defaults.esp32s2
+└── sdkconfig.defaults.esp32s3
+
+```
 
 ### 3.2. Model define
 
