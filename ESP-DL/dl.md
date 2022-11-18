@@ -33,7 +33,7 @@ For the sake of simplicity, I am using a classification problem and developed a 
 
 For this classification problem, I am using an open-source dataset from the Kaggle [Hand Gesture recognition Dataset](https://www.kaggle.com/datasets/gti-upm/leapgestrecog). The original dataset includes 10 classes however I am using only 6 classes that are easy to recognize and more useful in daily life. The hand gesture classes are represented in the table below. One more difference is related to the image size, The original dataset has an image size of (240 , 640) however for the sake of simplicity I have resized the dataset to (96 , 96). The dataset used in this article can be found [here](https://github.com/alibukharai/Blogs/tree/main/ESP-DL).
 
-<p align = 'center'>
+<div align="center">
 
 | Gesture     | Label Used |
 | :-----------: | :-----------: |
@@ -44,9 +44,10 @@ For this classification problem, I am using an open-source dataset from the Kagg
 |OK           |   4         |
 |C            |   5         |
 <p align = 'center'> <b>Table 1 — Classification used for every hand gesture.</b>
-
+</p>
 <p align = 'left'>
 
+</div align="center">
 
 
 ### 1.2. Test/Train Split 
