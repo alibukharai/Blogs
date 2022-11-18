@@ -166,6 +166,8 @@ Setting up an environment and installing the correct version of the modules is a
 
 <p align = 'center'>
 
+<div align="center">
+
 | Module     | How to install  |
 | :-----------: | :-----------: |
 | Python == 3.7                   |
@@ -177,6 +179,7 @@ Setting up an environment and installing the correct version of the modules is a
 <p align = 'center'>
 <b>Table 2 — Required Modules and specified verisons </b>.
 <p align = 'left'>
+</div>
 
 Next, we need to download ESP-DL. we can clone the [ESP-DL](https://github.com/espressif/esp-dl) from the Github repository. 
 ```bash
