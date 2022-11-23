@@ -789,11 +789,8 @@ __attribute__((aligned(16))) int16_t example_element[] = { 4,   4,   4,   3,   4
 extern "C" void app_main(void)
 {
 for (int i=0; i<9216;i++){
-
-    // printf("0x%02x,",example_element[i]);
 }
 Tensor<int16_t> input;
-               // input.set_element((int16_t *)frame->buf).set_exponent(-7).set_shape({96, 96, 1}).set_auto_free(false);
                 input.set_element((int16_t *)example_element).set_exponent(input_exponent).set_shape({input_height,input_width,input_channel}).set_auto_free(false);
                 HANDRECOGNITION model;
                 dl::tool::Latency latency;
@@ -802,7 +799,6 @@ Tensor<int16_t> input;
                 latency.end();
                 latency.print("\nSIGN", "forward");
                 float *score = model.l11.get_output().get_element_ptr();
-                // is_detected = true;
                 float max_score = score[0];
                 int max_index = 0;
                 for (size_t i = 0; i < 6; i++)
