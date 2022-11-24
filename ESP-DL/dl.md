@@ -536,7 +536,7 @@ HANDRECOGNITION model;
 
 ```
 
-### 3.3.5. Monitor Output 
+#### 3.3.5. Monitor Output 
 
 The output is taken out from the public layer i.e l11. and you can print the result in the terminal. 
 

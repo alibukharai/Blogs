@@ -1,3 +1,3 @@
 build/
-ESP-Matter(Demo)/
-
+.vscode/
+sdkconfig.old
