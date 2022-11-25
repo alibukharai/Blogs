@@ -788,8 +788,6 @@ __attribute__((aligned(16))) int16_t example_element[] = { 4,   4,   4,   3,   4
 
 extern "C" void app_main(void)
 {
-// for (int i=0; i<9216;i++){
-// }
 Tensor<int16_t> input;
                 input.set_element((int16_t *)example_element).set_exponent(input_exponent).set_shape({input_height,input_width,input_channel}).set_auto_free(false);
                 HANDRECOGNITION model;
