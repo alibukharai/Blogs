@@ -56,7 +56,7 @@ fp_res = 0
 input_name = m.get_inputs()[0].name
 for i in range(batch_num):
     # int8_model
-    [outputs, _] = eva.evalute_quantized_model(test_images[i * batch_size:(i + 1) * batch_size], False)
+    [outputs, _] = eva.evaluate_quantized_model(test_images[i * batch_size:(i + 1) * batch_size], False)
     res = res + sum(np.argmax(outputs[0], axis=1) == test_labels[i * batch_size:(i + 1) * batch_size])
 
     # floating-point model
