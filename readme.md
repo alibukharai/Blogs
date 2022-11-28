@@ -1,4 +1,5 @@
-Please follow the link to learn more 
+**Please follow the link to learn more**
 
-[Medium](https://medium.com/@engg.alibukharai)
-[Youtube](https://www.youtube.com/@esp32tutorials)
+**[Medium](https://medium.com/@engg.alibukharai)** 
+
+**[Youtube](https://www.youtube.com/@esp32tutorials)**
