@@ -115,7 +115,7 @@ pw_env_setup_PACKAGE_ROOT = "//.environment/packages"
 sudo apt-get install gn pkg-config libglib2.0-dev python3-venv libgirepository1.0-1 libdbus-1-dev
  
 ```
-for ubuntu 20.04 
+for ubuntu 20.04 follow the below block otherwise jump to [2.6](#26-compile-connectedhomeip-related-tools)
 
 ```c
 sudo apt-get install unzip
