@@ -49,5 +49,25 @@ idf.py build flash monitor
 ```
 Until now the everything is simple and if everything is right the light on the board turn on you can also control the status of the LED from the boot button on the board. The output should looks like this; 
 
-![](image.png)
+<p align="center">
+    <img src="./_static/1 output.png#center">
 
+
+From this output you can see that the commissioning window (mark in red box) is opened. In simple words your device is ready to get communicate with outside world (external devices).
+
+
+## 2 Commissioning 
+There are [several ways](https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/esp32/build_app_and_commission.md#commissioning) to commission and control the device. In this tutorial we are using standalone chip-tool app to commission and control the device. 
+
+*it is a good practice to open and split the terminal so when you send a command you can monitor the device output*
+
+### 2.1 Building Standalone chip-tool
+
+```bash 
+cd path/to/connectedhomeip
+scripts/examples/gn_build_example.sh examples/chip-tool out/debug
+
+```
+
+<p align="center">
+    <img src="./_static/1 output.png#center">
