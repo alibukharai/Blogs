@@ -203,6 +203,8 @@ idf.py build flash monitor
 
 ```
 
+[Follow here](/home/ali/work/learning/Blogs/ESP-Matter(Demo)/light_example/example_light.md) for detail commissioning and control
+
 ## 4. Commissioning and control 
 
 There are 2 ways to commission a Matter device. 
