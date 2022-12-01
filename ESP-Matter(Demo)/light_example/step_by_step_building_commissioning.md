@@ -1,4 +1,4 @@
-# **Step by step understanding of the ESP-MATTER**
+# **Step by step building and commissioning of the ESP-MATTER device**
 Matter or Project Connected Home over IP (CHIP) is a open source smart home connectivity standard. It enables secure and reliable connectivity among different smart home and building devices from different vendors over internet protocol(IP). <br>
 
 - The first version of the [specification](https://csa-iot.org/all-solutions/matter/) is already out for the developers to use. This includes some features like mains power plugs, electric lights and switches), door locks, thermostats and heating, ventilation, and air conditioning controllers, blinds and shades, home security sensors (such as door, window and motion sensors), and televisions and streaming video players.

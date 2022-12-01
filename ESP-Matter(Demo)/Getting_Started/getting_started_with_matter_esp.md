@@ -203,7 +203,7 @@ idf.py build flash monitor
 
 ```
 
-[Follow here](/home/ali/work/learning/Blogs/ESP-Matter(Demo)/light_example/example_light.md) for detail commissioning and control
+[Follow here](../light_example/step_by_step_building_commissioning.md) for detail commissioning and control
 
 ## 4. Commissioning and control 
 
