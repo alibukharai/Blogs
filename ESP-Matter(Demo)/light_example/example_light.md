@@ -50,7 +50,7 @@ idf.py build flash monitor
 Until now the everything is simple and if everything is right the light on the board turn on you can also control the status of the LED from the boot button on the board. The output should looks like this; 
 
 <p align="center">
-    <img src="./_static/1 output.png#center">
+    <img src="../_static/1 output.png#center">
 
 
 From this output you can see that the commissioning window (mark in red box) is opened. In simple words your device is ready to get communicate with outside world (external devices).
@@ -70,7 +70,7 @@ scripts/examples/gn_build_example.sh examples/chip-tool out/debug
 
 ``` 
 <p align="center">
-    <img src="./_static/2.png#center">
+    <img src="../_static/2.png#center">
 
 ### 2.2 Commission a device 
 
@@ -91,7 +91,7 @@ out/debug/chip-tool pairing ble-wifi 123 SSID Password 20202021 3840
 The output looks like this; on left side(black-white) the chip-tool output, on the right side(black-green) device output 
 
 <p align="center">
-    <img src="./_static/3.png#center">
+    <img src="../_static/3.png#center">
 
 
 You can see the node id is **node ID: 0x000000000000007B** which is same as 123 in decimal number. Now the device is commissioned successfully. In other words your device becomes a matter node with id 0x7b.
@@ -105,7 +105,7 @@ out/debug/chip-tool onoff toggle 0x7B 0x1
 ```
 
 <p align="center">
-    <img src="./_static/4.png#center">
+    <img src="../_static/4.png#center">
 
 You can see the after receiving the command setting the status of the light from 1(ON) to 0(OFF)
 
