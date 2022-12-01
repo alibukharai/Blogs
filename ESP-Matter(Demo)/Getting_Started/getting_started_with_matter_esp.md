@@ -3,7 +3,7 @@
 ## Requirements 
 
 - ESP-IDF [release 4.4](https://github.com/espressif/esp-idf/tree/release/v4.4)
-- Linux operating system (Ubuntu 20.04)
+- Linux operating system (Ubuntu 20.04 or 22.04)
 
 ## 1. ESP-IDF Environment 
 
