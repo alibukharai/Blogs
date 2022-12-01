@@ -203,7 +203,7 @@ idf.py build flash monitor
 
 ```
 
-[Follow here](../light_example/step_by_step_building_commissioning.md) for detail commissioning and control
+[Follow here](..//step_by_step_building_comissioning_light_example/step_by_step_building_commissioning.md) for detail commissioning and control
 
 ## 4. Commissioning and control 
 
