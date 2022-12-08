@@ -796,7 +796,7 @@ Tensor<int16_t> input;
                 model.forward(input);
                 latency.end();
                 latency.print("\nSIGN", "forward");
-                float *score = model.l11.get_output().get_element_ptr();
+                float *score = model.l10.get_output().get_element_ptr();
                 float max_score = score[0];
                 int max_index = 0;
                 for (size_t i = 0; i < 6; i++)
