@@ -6,353 +6,79 @@
 
 #include "dl_tool.hpp"
 #include "model_define.hpp"
-
-
+#include "i2c_bus.h"
+#include "mpu6050.h"
+#include "driver/i2c.h"
+#include "esp_log.h"
 
 int input_height = 80;
 int input_width = 3;
 int input_channel = 1;
 int input_exponent = -13;
+float acc_xyz[240] = {0};
+int j=0;
 
-float example_element[240] = {     0.45363996,
-        -1.512388  ,
-        -0.41243552,
+static const char *TAG = "i2c-simple-example";
 
-       -2.90834085,
-        -0.90576966,
-         1.21374001,
+#define I2C_MASTER_SCL_IO 16      /*!< gpio number for I2C master clock */
+#define I2C_MASTER_SDA_IO 17      /*!< gpio number for I2C master data  */
+#define I2C_MASTER_NUM I2C_NUM_0  /*!< I2C port number for master dev */
+#define I2C_MASTER_FREQ_HZ 400000 /*!< I2C master clock frequency */
 
-       -0.52571966,
-        -0.39050956,
-         1.67418527,
+static i2c_bus_handle_t i2c_bus = NULL;
+static mpu6050_handle_t mpu6050 = NULL;
 
-       -2.34192023,
-         1.20277704,
-        -0.26626245,
 
-        3.3807559 ,
-         0.44267702,
-         2.09808712,
-
-        0.48287464,
-        -1.512388  ,
-         2.05423524,
-
-        1.59378998,
-        -2.33461155,
-         0.57423274,
-
-       -2.52829088,
-         0.17591111,
-        -1.17253557,
-
-        2.18944538,
-        -0.39050956,
-        -0.57688025,
-
-        0.78252943,
-        -2.50636494,
-         2.46717439,
-
-       -0.7997942 ,
-        -0.89480672,
-        -1.87051206,
-
-        0.28919526,
-         2.30272958,
-         1.67418527,
-
-       -1.23465912,
-         0.4024794 ,
-         2.85818706,
-
-        1.15161643,
-        -3.03258801,
-         2.20040835,
-
-        2.10539585,
-        -0.53302832,
-        -1.84858604,
-
-       -3.79268795,
-         3.66944788,
-        -0.05065715,
-
-        2.28080337,
-         0.10282459,
-         2.49640879,
-
-        0.94697424,
-        -1.501425  ,
-        -0.45263313,
-
-        0.3293929 ,
-         0.21610873,
-         1.90075353,
-
-       -2.47713026,
-         1.50974046,
-        -1.84127738,
-
-        1.27586359,
-         0.28919526,
-         2.81798968,
-
-        2.98974296,
-         0.44267702,
-         3.46480542,
-
-        1.34529578,
-         1.44030825,
-         2.50737176,
-
-       -2.91930408,
-         4.35646127,
-         0.40978806,
-
-        2.45621115,
-        -2.12631497,
-         1.72534588,
-
-       -3.04355098,
-         0.50480058,
-         3.27843481,
-
-       -1.70606724,
-         0.86292461,
-        -0.92293616,
-
-        0.47477486,
-        -0.08590398,
-         2.14883907,
-
-       -0.98139554,
-        -1.98317695,
-         0.56512123,
-
-       -0.6598689 ,
-        -1.44375619,
-         2.156811  ,
-
-        2.14352452,
-         1.61207561,
-         1.90968727,
-
-       -0.46588996,
-        -1.75199662,
-        -0.14436338,
-
-       -2.2515587 ,
-         0.85741795,
-         0.87867595,
-
-        0.71392687,
-        -1.19131789,
-         2.156811  ,
-
-       -0.53232113,
-        -0.98936727,
-        -0.12310536,
-
-        0.61029422,
-        -0.22673796,
-        -0.55623631,
-
-        2.156811  ,
-         2.06646463,
-        -1.46767139,
-
-       -0.54826453,
-         1.0141957 ,
-        -0.49511973,
-
-        1.95486006,
-        -0.00884389,
-        -0.52434935,
-
-        0.76707168,
-         1.43138307,
-        -1.79716978,
-
-        2.156811  ,
-         2.08240808,
-        -0.78741665,
-
-        0.4163154 ,
-         0.1984214 ,
-         2.156811  ,
-
-        1.89640099,
-         0.43225886,
-         2.02394862,
-
-        0.38708567,
-        -1.44375619,
-        -1.11691506,
-
-        2.156811  ,
-         0.34191249,
-        -1.49690109,
-
-        0.34988422,
-        -1.3560671 ,
-         2.14883907,
-
-        2.14883907,
-        -3.45529079,
-         1.29054897,
-
-       -0.52434935,
-         0.7750435 ,
-        -1.44375619,
-
-       -0.98139554,
-         1.57487435,
-        -0.68378408,
-
-        0.49868985,
-        -1.15411647,
-         2.156811  ,
-
-        1.55095917,
-         1.7316519 ,
-         1.22411787,
-
-        0.99825205,
-        -1.47564313,
-         2.156811  ,
-
-        1.85919934,
-         1.84325608,
-         0.6554676 ,
-
-       -0.98936727,
-        -2.0868929 ,
-         0.62535012,
-
-        1.09088437,
-         0.75084191,
-         1.14755803,
-
-       -1.84805362,
-         1.11517309,
-         1.10302873,
-
-       -0.05878283,
-        -1.71041748,
-         0.07885338,
-
-       -1.49181869,
-        -0.68624203,
-         1.15970242,
-
-        0.05456463,
-        -0.26523714,
-        -1.28941249,
-
-       -0.8886482 ,
-        -0.82387824,
-         0.24887461,
-
-        0.85204507,
-         0.4755695 ,
-         0.54438763,
-
-        0.93300756,
-        -0.70648264,
-         1.22852055,
-
-        0.86418946,
-         0.13552709,
-        -1.97354544,
-
-       -0.19641903,
-        -0.37858461,
-        -1.75494671,
-
-        0.75084191,
-         1.10302873,
-         0.09909402,
-
-        0.16791209,
-        -0.10331218,
-        -1.39061559,
-
-        0.77108255,
-         0.55653202,
-        -0.71862703,
-
-       -0.25309278,
-        -1.20845003,
-         0.64559073,
-
-        0.33793329,
-        -0.36644024,
-        -0.01425347,
-
-        0.63344634,
-        -0.61742392,
-         0.75084191,
-
-       -0.17213028,
-         1.10302873,
-         0.90871878,
-
-        2.26484006,
-        -2.01807476,
-         1.11517309,
-
-       -0.60527955,
-        -1.81162037,
-        -0.02639783,
-
-       -2.23262535,
-         1.36210859,
-        -1.2448831 ,
-
-        0.40675143,
-        -0.09521596,
-         0.87633385,
-
-        0.73869767,
-        -0.95746633,
-         1.00992188,
-
-        0.03027591,
-         0.49985822,
-         0.62535012,
-
-       -0.70648264,
-        -1.48372238,
-         0.22458586,
-
-        0.45128078,
-        -0.4109696 ,
-        -1.64159928,
-
-       -1.35823059,
-         0.36222204,
-         0.83990068
-        };
-
-
-//int16_t normalize[240]={};
 
 extern "C" void app_main(void)
 {
-  // int32_t max=example_element[0];
+    
+    i2c_config_t conf = {
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = I2C_MASTER_SDA_IO,
+        .scl_io_num = I2C_MASTER_SCL_IO,
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+        .clk_flags = 0,
+    };
+        conf.master.clk_speed = I2C_MASTER_FREQ_HZ;
 
-  // for (int i = 0; i < 80*3; i++) {
-  //   if (max < example_element[i]) {
-  //     max= example_element[i];
-  //   }}
-  // for (int i = 0; i < 80*3; i++) {
-  //     normalize[i] = (int16_t) * example_element[i]/max;
-  //   }
-printf("ssssssssssssssssssssssss\n");
+    i2c_bus = i2c_bus_create(I2C_MASTER_NUM, &conf);
+    mpu6050 = mpu6050_create(i2c_bus, MPU6050_I2C_ADDRESS);
+    uint8_t mpu6050_deviceid;
+    mpu6050_acce_value_t acce;
+    int cnt = 10;
+    mpu6050_get_deviceid(mpu6050, &mpu6050_deviceid);
+    printf("mpu6050 device ID is: 0x%02x\n", mpu6050_deviceid);
+    mpu6050_wake_up(mpu6050);
+    mpu6050_set_acce_fs(mpu6050, ACCE_FS_4G);
+    mpu6050_set_gyro_fs(mpu6050, GYRO_FS_500DPS);
+
+while(1){
+
+for (int i=0 ;i<80; i++)
+{
+
+    mpu6050_get_acce(mpu6050, &acce);
+    // printf("acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", acce.acce_x, acce.acce_y, acce.acce_z);
+    
+    // acc_xyz[i]={acc_value.raw_acce_x,acc_value.raw_acce_y,acc_value.raw_acce_z};
+    acc_xyz[j]=acce.acce_x;
+    j=j+1;
+    acc_xyz[j]=acce.acce_y;
+    j=j+1;
+    acc_xyz[j]=acce.acce_z;
+    j=j+1;
+    // ESP_LOGI(TAG, "%f\n",acc_xyz[i]);
+    vTaskDelay(50 / portTICK_RATE_MS);
+    // printf("%d",portTICK_RATE_MS);
+}
+// printf("The value of j %d\n",j);
+j=0;
+
 int16_t *model_input = (int16_t *)dl::tool::malloc_aligned_prefer(input_height*input_width*input_channel, sizeof(int16_t *));
     for(int i=0 ;i<input_height*input_width*input_channel; i++){
-        float normalized_input = example_element[i] / 1.0; //normalization
+        float normalized_input = acc_xyz[i] / 1.0; //normalization
         model_input[i] = (int16_t)DL_CLIP(normalized_input * (1 << -input_exponent), -32768, 32767);
     } 
 
@@ -363,7 +89,7 @@ Tensor<int16_t> input;
                 latency.start();
                 model.forward(input);
                 latency.end();
-                latency.print("\nSIGN", "forward");
+                latency.print("\nActivity model", "forward");
                 float *score = model.l6.get_output().get_element_ptr();
                 float max_score = score[0];
                 int max_index = 0;
@@ -404,4 +130,5 @@ Tensor<int16_t> input;
                 }
                 printf("\n");
 
+}
 }

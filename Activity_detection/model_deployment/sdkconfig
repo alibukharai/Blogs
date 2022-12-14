@@ -458,6 +458,7 @@ CONFIG_ESP_SLEEP_MSPI_NEED_ALL_IO_PU=y
 #
 # RTC Clock Config
 #
+CONFIG_RTC_CLOCK_BBPLL_POWER_ON_WITH_USB=y
 # end of RTC Clock Config
 # end of Hardware Settings
 
@@ -544,8 +545,8 @@ CONFIG_ESP_CONSOLE_UART_DEFAULT=y
 # CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG is not set
 # CONFIG_ESP_CONSOLE_UART_CUSTOM is not set
 # CONFIG_ESP_CONSOLE_NONE is not set
-CONFIG_ESP_CONSOLE_SECONDARY_NONE=y
-# CONFIG_ESP_CONSOLE_SECONDARY_USB_SERIAL_JTAG is not set
+# CONFIG_ESP_CONSOLE_SECONDARY_NONE is not set
+CONFIG_ESP_CONSOLE_SECONDARY_USB_SERIAL_JTAG=y
 CONFIG_ESP_CONSOLE_UART=y
 CONFIG_ESP_CONSOLE_MULTIPLE_UART=y
 CONFIG_ESP_CONSOLE_UART_NUM=0
@@ -1290,12 +1291,24 @@ CONFIG_WPA_MBEDTLS_CRYPTO=y
 # CONFIG_WPA_MBO_SUPPORT is not set
 # CONFIG_WPA_DPP_SUPPORT is not set
 # end of Supplicant
+
+#
+# Bus Options
+#
+
+#
+# I2C Bus Options
+#
+CONFIG_I2C_BUS_DYNAMIC_CONFIG=y
+CONFIG_I2C_MS_TO_WAIT=200
+# end of I2C Bus Options
+# end of Bus Options
 # end of Component config
 
 #
 # Compatibility options
 #
-CONFIG_LEGACY_INCLUDE_COMMON_HEADERS=y
+# CONFIG_LEGACY_INCLUDE_COMMON_HEADERS is not set
 # end of Compatibility options
 
 # Deprecated options for backward compatibility
