@@ -3,7 +3,6 @@
 #include "esp_system.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-
 #include "dl_tool.hpp"
 #include "model_define.hpp"
 #include "i2c_bus.h"
@@ -16,12 +15,12 @@ int input_width = 3;
 int input_channel = 1;
 int input_exponent = -13;
 float acc_xyz[240] = {0};
-int index=0;
+int index_acc=0;
 
 static const char *TAG = "i2c-simple-example";
 
-#define I2C_MASTER_SCL_IO 16      /*!< gpio number for I2C master clock */
-#define I2C_MASTER_SDA_IO 17      /*!< gpio number for I2C master data  */
+#define I2C_MASTER_SCL_IO 6      /*!< gpio number for I2C master clock */
+#define I2C_MASTER_SDA_IO 7      /*!< gpio number for I2C master data  */
 #define I2C_MASTER_NUM I2C_NUM_0  /*!< I2C port number for master dev */
 #define I2C_MASTER_FREQ_HZ 400000 /*!< I2C master clock frequency */
 
@@ -63,18 +62,18 @@ for (int i=0 ;i<80; i++)
     // printf("acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", acce.acce_x, acce.acce_y, acce.acce_z);
     
     // acc_xyz[i]={acc_value.raw_acce_x,acc_value.raw_acce_y,acc_value.raw_acce_z};
-    acc_xyz[index]=acce.acce_x;
-    index=index+1;
-    acc_xyz[index]=acce.acce_y;
-    index=index+1;
-    acc_xyz[index]=acce.acce_z;
-    index=index+1;
+    acc_xyz[index_acc]=acce.acce_x;
+    index_acc=index_acc+1;
+    acc_xyz[index_acc]=acce.acce_y;
+    index_acc=index_acc+1;
+    acc_xyz[index_acc]=acce.acce_z;
+    index_acc=index_acc+1;
     // ESP_LOGI(TAG, "%f\n",acc_xyz[i]);
     vTaskDelay(50 / portTICK_RATE_MS);
     // printf("%d",portTICK_RATE_MS);
 }
 // printf("The value of j %d\n",j);
-index=0;
+index_acc=0;
 
 int16_t *model_input = (int16_t *)dl::tool::malloc_aligned_prefer(input_height*input_width*input_channel, sizeof(int16_t *));
     for(int i=0 ;i<input_height*input_width*input_channel; i++){
