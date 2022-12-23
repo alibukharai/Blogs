@@ -16,7 +16,7 @@ int input_width = 3;
 int input_channel = 1;
 int input_exponent = -13;
 float acc_xyz[240] = {0};
-int j=0;
+int index=0;
 
 static const char *TAG = "i2c-simple-example";
 
@@ -63,18 +63,18 @@ for (int i=0 ;i<80; i++)
     // printf("acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", acce.acce_x, acce.acce_y, acce.acce_z);
     
     // acc_xyz[i]={acc_value.raw_acce_x,acc_value.raw_acce_y,acc_value.raw_acce_z};
-    acc_xyz[j]=acce.acce_x;
-    j=j+1;
-    acc_xyz[j]=acce.acce_y;
-    j=j+1;
-    acc_xyz[j]=acce.acce_z;
-    j=j+1;
+    acc_xyz[index]=acce.acce_x;
+    index=index+1;
+    acc_xyz[index]=acce.acce_y;
+    index=index+1;
+    acc_xyz[index]=acce.acce_z;
+    index=index+1;
     // ESP_LOGI(TAG, "%f\n",acc_xyz[i]);
     vTaskDelay(50 / portTICK_RATE_MS);
     // printf("%d",portTICK_RATE_MS);
 }
 // printf("The value of j %d\n",j);
-j=0;
+index=0;
 
 int16_t *model_input = (int16_t *)dl::tool::malloc_aligned_prefer(input_height*input_width*input_channel, sizeof(int16_t *));
     for(int i=0 ;i<input_height*input_width*input_channel; i++){
