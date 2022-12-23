@@ -47,12 +47,12 @@ extern "C" void app_main(void)
     mpu6050 = mpu6050_create(i2c_bus, MPU6050_I2C_ADDRESS);
     uint8_t mpu6050_deviceid;
     mpu6050_acce_value_t acce;
-    int cnt = 10;
+    // int cnt = 10;
     mpu6050_get_deviceid(mpu6050, &mpu6050_deviceid);
     printf("mpu6050 device ID is: 0x%02x\n", mpu6050_deviceid);
-    mpu6050_wake_up(mpu6050);
+    // mpu6050_wake_up(mpu6050);
     mpu6050_set_acce_fs(mpu6050, ACCE_FS_4G);
-    mpu6050_set_gyro_fs(mpu6050, GYRO_FS_500DPS);
+    // mpu6050_set_gyro_fs(mpu6050, GYRO_FS_500DPS);
 
 while(1){
 

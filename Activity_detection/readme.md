@@ -17,7 +17,7 @@ git submodule update --init --recursive
 ### 3. Change the working directory to model_deployment
 
 ```bash 
-cd ESP-DL/model_deployment
+cd Activity_detection/model_deployment
 
 ```
 
