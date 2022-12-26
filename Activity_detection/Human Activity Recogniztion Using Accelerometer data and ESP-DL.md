@@ -54,10 +54,13 @@ The Project directory should look like this;
 ```
 ### 1.2. Model define
 
-We will define our model in the 'model_define.hpp' file. Follow the below steps for a details explanation of defining the model.   
+We will define our model in the 'model_define.hpp' file. Follow the below steps for a details explanation of defining the model. Before getting into details, let us look into what our model looks like when opening in [Netron](https://netron.app/). 
 
-#### 3.2.1. Import libraries
-Firstly import all the relevant libraries. Based on our [model design](#13-building-a-model) or another way to know which particular libraries need to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2](#22-optimization-and-quantization).
+<p align="center">
+    <img src="./_static/6.png#center">
+
+#### 1.2.1. Import libraries
+Import all the relevant libraries.
 Please [check here](https://github.com/espressif/esp-dl/tree/master/include/layer) for all the currently supported libraries by [ESP-DL](https://github.com/espressif/esp-dl). 
 
 ```cpp
@@ -77,11 +80,12 @@ using namespace layer;
 using namespace Activity_coefficient;
 
 ```
-#### 3.2.2. Declare layers
+
+#### 1.2.2. Declare layers
+
 The next is to declare each layer. 
 - Input is not considered a layer so not defined here.
 - Except for the output layer, all the layers are declared as private layers.
-- Remember to place each layer in order as defined in [previous section 1.3.](#13-building-a-model) while building the model. 
 
 ```cpp
 class ACTIVITY : public Model<int16_t> 
@@ -99,26 +103,9 @@ public:
 
 ```
 
-#### 3.2.3. Initialize layers 
+#### 1.2.3. Initialize layers 
 
 After declaring the layers, we need to initialize each layer with its weight, biases activation functions and shape. let us check each layer in detail. 
-
-Before getting into details, let us look into how our model looks like when opening in Netron that is somehow imported to get some parameters for initializing. 
-
-<p align="center">
-    <img src="./_static/6.png#center">
-
-
-- The first layer is reshaped layer (note that the input is not considered as a layer) and gives an output shape of (96 , 96, 1) for this layer. These parameters must be the same as you used during model training [see section 1.3.](#13-building-a-model) Another way to know the parameter and layer is to use an open source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of [previous section 2.2.](#22-optimization-and-quantization). 
-
-- For the convolution 2D layer we can get the name of this layer for the filter, bias and activation function from the .hpp file generated at the end of the [previous section 2.2.](#22-optimization-and-quantization), However for the exponents, we need to check the output generated in [section 2.2.5.](#225-calibration)  
-
-- For the max-pooling layer, we can use the same parameters as we use during building our model [see section 1.3.](#13-building-a-model) or another way to know the parameter and layer is to use an open-source tool [Netron](https://netron.app/) and open your optimized ONNX model generated at the end of the [previous section 2.2.](#22-optimization-and-quantization).
-
-- For the dense layer or fully connected layer, conv2D block is used and we can get the name of this layer for the filter, bias and activation function from the .hpp file generated at the end of [previous section 2.2.](#22-optimization-and-quantization), However for the exponents, we need to check the output generated in [section 2.2.5.](#225-calibration)
-
-- The output layer is a softmax layer weight and the name can be taken from the output generated in [section 2.2.5.](#225-calibration)
- 
 
 ```cpp
     ACTIVITY () : 
@@ -130,7 +117,7 @@ Before getting into details, let us look into how our model looks like when open
                          l6(Softmax<int16_t>(-14,"l5")){}
 
 ```
-#### 3.2.4. Build layers
+#### 1.2.4. Build layers
 
 The next step is to build each layer. For more information about building layers please [click here](https://github.com/espressif/esp-dl/tree/master/include/layer) on each layer building function.  
 
@@ -147,7 +134,7 @@ void build(Tensor<int16_t> &input)
     }
 
 ```
-#### 3.2.5. Call layers
+#### 1.2.5. Call layers
 
 In the end, we need to connect these layers and call them one by one by using a call function. For more information about calling layers please [click here](https://github.com/espressif/esp-dl/tree/master/include/layer) on each layer calling function.
 
@@ -176,10 +163,10 @@ void call(Tensor<int16_t> &input)
 };
 
 ```
-### 3.3. Model Run
+### 1.3. Model Run
 After building our Model need to run and give input to our model. 'app_main.cpp' file is used to generate the input and run our model on [ESP32-S3](https://www.espressif.com/en/products/socs/esp32-s3). 
 
-#### 3.3.1. import libraries
+#### 3.3.1. Import libraries
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -195,25 +182,66 @@ After building our Model need to run and give input to our model. 'app_main.cpp'
 
 ```
 
-#### 3.3.2. Declare Input 
+#### 1.3.2. Declare Input 
 we trained our model by giving an input of size (96, 96, 1) [see section 1.3.](#13-building-a-model) However, the input_exponent can get its exponent value from the output generated in [section 2.2.5.](#225-calibration) Another thing is to write the pixels of the input/test picture here. 
 
 ```cpp
-int input_height = 96;
-int input_width = 96;
+int input_height = 80;
+int input_width = 3;
 int input_channel = 1;
-int input_exponent = -7;
+int input_exponent = -13;
+float acc_xyz[240] = {0};
+int index_acc=0;
+#define I2C_MASTER_SCL_IO 16      /*!< gpio number for I2C master clock */
+#define I2C_MASTER_SDA_IO 17      /*!< gpio number for I2C master data  */
+#define I2C_MASTER_NUM I2C_NUM_0  /*!< I2C port number for master dev */
+#define I2C_MASTER_FREQ_HZ 400000 /*!< I2C master clock frequency */
+static i2c_bus_handle_t i2c_bus = NULL;
+static mpu6050_handle_t mpu6050 = NULL;
 
-__attribute__((aligned(16))) int16_t example_element[] = {
-
-    //add your input/test image pixels 
-};
+extern "C" void app_main(void)
+{
+    i2c_config_t conf = {
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = I2C_MASTER_SDA_IO,
+        .scl_io_num = I2C_MASTER_SCL_IO,
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+        .clk_flags = 0,
+    };
+    
+    conf.master.clk_speed = I2C_MASTER_FREQ_HZ;
+    i2c_bus = i2c_bus_create(I2C_MASTER_NUM, &conf);
+    mpu6050 = mpu6050_create(i2c_bus, MPU6050_I2C_ADDRESS);
+    uint8_t mpu6050_deviceid;
+    mpu6050_acce_value_t acce;
+    mpu6050_get_deviceid(mpu6050, &mpu6050_deviceid);
+    printf("mpu6050 device ID is: 0x%02x\n", mpu6050_deviceid);
+    mpu6050_set_acce_fs(mpu6050, ACCE_FS_4G);
+while(1){
+for (int i=0 ;i<80; i++)
+{
+    mpu6050_get_acce(mpu6050, &acce);
+    acc_xyz[index_acc]=acce.acce_x;
+    index_acc=index_acc+1;
+    acc_xyz[index_acc]=acce.acce_y;
+    index_acc=index_acc+1;
+    acc_xyz[index_acc]=acce.acce_z;
+    index_acc=index_acc+1;
+    vTaskDelay(50 / portTICK_RATE_MS);
+}
+index_acc=0;
+int16_t *model_input = (int16_t *)dl::tool::malloc_aligned_prefer(input_height*input_width*input_channel, sizeof(int16_t *));
+    for(int i=0 ;i<input_height*input_width*input_channel; i++){
+        float normalized_input = acc_xyz[i] / 1.0; //normalization
+        model_input[i] = (int16_t)DL_CLIP(normalized_input * (1 << -input_exponent), -32768, 32767);
+    } 
 
 ```
 
-#### 3.3.3. Set Input Shape
+#### 1.3.3. Set Input Shape
 
-Each pixel of the input is adjusted based on the input_exponent declared [above](#332-declare-input).   
+Each pixel of the input is adjusted based on the input_exponent declared [above](#132-declare-input).   
 
 ```cpp
 Tensor<int16_t> input;
@@ -222,7 +250,7 @@ Tensor<int16_t> input;
 
 ```
 
-#### 3.3.4. Call Model 
+#### 1.3.4. Call Model 
 Call the model by calling the method forward and passing input to it. Latency is used to calculate the time taken by ESP32-S3 to run the neural network. 
 
 ```cpp
@@ -235,7 +263,7 @@ ACTIVITY model;
 
 ```
 
-#### 3.3.5. Monitor Output 
+#### 1.3.5. Monitor Output 
 
 The output is taken out from the public layer i.e l11. and you can print the result in the terminal. 
 
@@ -281,5 +309,6 @@ float *score = model.l6.get_output().get_element_ptr();
 }
 
 ```
-## 4. Future Directions
+---
+## 3. Future Directions
 In future, we will design a model for [ESP32-S3 EYE](https://www.espressif.com/en/products/devkits/esp-eye/resourceswww.espressif.com2) devkit which could capture images real time and do hand gesture recognition.
