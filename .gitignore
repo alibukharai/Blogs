@@ -2,3 +2,4 @@ build/
 .vscode/
 ../../sdkconfig.old/
 vscode/
+../Human_Activity_Recognition.ipynb
