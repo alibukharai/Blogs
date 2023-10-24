@@ -14,3 +14,14 @@ sdkconfig
 extra.c
 Wifi/sdkconfig.old
 Wifi/sdkconfig
+
+# Ignore SDK configuration files
+**/sdkconfig
+**/sdkconfig.old
+
+# Ignore Visual Studio Code settings and folders
+.vscode/
+.vscode/*
+
+# Ignore build output
+**/build/
